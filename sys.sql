@@ -1,0 +1,9 @@
+-- USER SQL
+CREATE USER test IDENTIFIED BY "test"  ;
+
+-- QUOTAS
+
+-- ROLES
+GRANT "DBA" TO test ;
+
+-- SYSTEM PRIVILEGES
