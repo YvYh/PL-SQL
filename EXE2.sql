@@ -36,17 +36,23 @@ create or replace procedure prc_add_client(p_id in customer_cst.cst_id%TYPE,
 p_email in customer_cst.cst_email%TYPE, 
 p_nom in customer_cst.cst_last_name%TYPE,
 p_prenom in customer_cst.cst_first_name%TYPE,
-p_phone in customer_cst.cst_phont%TYPE) is
+p_phone in customer_cst.cst_phone%TYPE) is
 e_no_name EXCEPTION;
+v_error_msg VARCHAR2(255);
+
 begin
-    INSERT INTO CUSTOMER_CST VALUES (p_id, p_email, p_nom, p_prenom, p_phont);
-    if (p_nom is NULL)||(p_prenom is NULL) then
+    INSERT INTO CUSTOMER_CST VALUES (p_id, p_email, p_nom, p_prenom, p_phone);
+    if ((p_nom is NULL)or(p_prenom is NULL)) then
         raise e_no_name;
+    end if;
     
     EXCEPTION
-        WHEN DUP_VAL_ON_INDEX THEN dbms_output.put_line("customer existed");
-        when e_no_name THEN dbms_output.put_line("nom et prénom non renseignés");
-        when other then 
+        WHEN DUP_VAL_ON_INDEX THEN dbms_output.put_line('customer existed');
+        when e_no_name THEN dbms_output.put_line('nom et prénom non renseignés');
+        when OTHERS then 
+        v_error_msg := SQLERRM;
+        insert into error_log VALUEs(USER,SYSDATE, SQLCODE, v_error_msg);
+end;
         
 --Ecrire une fonction qui : 
 -- Calcule la durée moyenne des spectacles 
